@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multiplication Mountain — Lesson 1: Meet the Area Model | Math Foundations</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Bangers&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+:root{
+ --navy:#1B2C5C; --gold:#E0AC3C; --sky:#7CC6FF; --grass:#86D464;
+ --ink:#2A2A35; --ok:#3D8A30; --bad:#D14545; --pumpkin:#E07B3C;
+ --shadow:0 8px 24px rgba(27,44,92,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:'Nunito','Comic Sans MS',sans-serif;background:linear-gradient(135deg,#FFF8E8 0%,#FFE9D6 50%,#E0F6FF 100%);color:var(--ink);min-height:100vh;font-size:18px;line-height:1.55}
+.hud{position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,var(--navy),#0f1a3a);color:#fff;padding:8px 18px;display:flex;justify-content:space-between;align-items:center;z-index:100;box-shadow:var(--shadow);flex-wrap:wrap;gap:8px}
+.hud-left{display:flex;align-items:center;gap:12px}
+.kc-logo{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.kc-logo-large{justify-content:center;margin-bottom:26px}
+.kc-logo-box{background:var(--navy);color:var(--gold);font-family:'Fredoka One',cursive;font-weight:900;font-size:1.1rem;border-radius:8px;padding:6px 11px;line-height:1;border:2px solid var(--gold)}
+.kc-logo-text{display:flex;flex-direction:column;line-height:1.15}
+.kc-logo-name{font-family:'Fredoka One',cursive;font-weight:900;font-size:1.05rem;color:var(--navy)}
+.kc-logo-tagline{font-size:.55rem;letter-spacing:1.5px;color:var(--gold);font-weight:800;text-transform:uppercase}
+.kc-logo.kc-logo-onhud .kc-logo-name{color:#fff}
+.kc-logo.kc-logo-onhud .kc-logo-tagline{color:var(--gold)}
+.kc-logo-large .kc-logo-box{font-size:1.6rem;padding:12px 18px;border-radius:12px}
+.kc-logo-large .kc-logo-name{font-size:1.7rem}
+.kc-logo-large .kc-logo-tagline{font-size:.75rem;letter-spacing:2px}
+.hud-title{font-family:'Fredoka One',cursive;font-size:1.05rem}
+.hud-right{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.stat{background:rgba(255,255,255,.13);padding:6px 14px;border-radius:20px;font-weight:800;font-size:.92rem;display:flex;align-items:center;gap:6px}
+.stat .big{color:var(--gold);font-family:'Fredoka One',cursive}
+.xpbar{width:120px;height:10px;background:rgba(255,255,255,.2);border-radius:5px;overflow:hidden}
+.xpfill{height:100%;background:linear-gradient(90deg,var(--gold),#FFD86F);transition:width .4s;width:0%}
+.wrap{max-width:880px;margin:0 auto;padding:96px 18px 40px}
+.slide{background:#fff;border-radius:24px;padding:28px;box-shadow:var(--shadow);min-height:520px;display:none;animation:pop .35s ease}
+.slide.on{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+h1{font-family:'Bangers',cursive;font-size:2.4rem;color:var(--navy);letter-spacing:1.5px;margin-bottom:6px}
+h2{font-family:'Fredoka One',cursive;font-size:1.7rem;color:var(--navy);margin-bottom:12px}
+h3{font-family:'Fredoka One',cursive;font-size:1.22rem;color:var(--pumpkin);margin:14px 0 8px}
+.badge{display:inline-block;padding:5px 14px;border-radius:14px;font-weight:900;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;background:linear-gradient(135deg,var(--gold),#F2C465);color:var(--navy);margin-bottom:8px}
+.btn{padding:13px 26px;border-radius:14px;font-weight:900;border:none;cursor:pointer;font-family:inherit;font-size:1rem;transition:all .15s;display:inline-flex;align-items:center;gap:8px}
+.btn:active{transform:translateY(2px)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn-go{background:linear-gradient(135deg,var(--grass),#5DB041);color:#fff;box-shadow:0 4px 0 #3D8A30}
+.btn-back{background:#e5e7eb;color:#374151}
+.btn-pri{background:linear-gradient(135deg,var(--navy),#314580);color:#fff;box-shadow:0 4px 0 #0f1a3a}
+.nav{display:flex;justify-content:space-between;margin-top:22px;gap:10px;flex-wrap:wrap}
+.dots{display:flex;gap:7px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.dot{width:11px;height:11px;border-radius:50%;background:#cbd5e1;transition:all .2s}
+.dot.on{background:var(--gold);transform:scale(1.4)}
+.dot.done{background:var(--grass)}
+.card{background:#fffaf0;border:3px solid #FFE9C7;border-radius:18px;padding:16px;margin:12px 0}
+.card-sky{background:#EAF6FF;border-color:#C9E5FB}
+.card-grass{background:#EFFAE6;border-color:#C9EAB4}
+.card-gold{background:#FFF6E1;border-color:#FFE0A0}
+.qbox{background:#fff;border:3px solid #E2E8F0;border-radius:18px;padding:18px;margin:14px 0;transition:border-color .25s}
+.qbox.ok{border-color:var(--grass)}
+.qbox.locked{border-color:#E07B3C;background:#FFF6EE}
+.qbox .pts{float:right;font-weight:900;color:var(--gold);font-size:.85rem}
+.qtext{font-weight:800;font-size:1.08rem;margin-bottom:12px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{padding:13px 16px;border-radius:13px;border:3px solid #D9E0EC;background:#F8FAFF;font-weight:800;font-size:1.02rem;cursor:pointer;font-family:inherit;text-align:left;transition:all .15s}
+.opt:hover:not(:disabled){border-color:var(--sky);transform:translateY(-2px)}
+.opt.right{background:#E5F7DC;border-color:var(--grass)}
+.opt.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.feedback{margin-top:10px;font-weight:900;display:none}
+.feedback.show{display:block}
+.feedback.ok{color:var(--ok)}
+.feedback.bad{color:var(--bad)}
+.fillrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+.fillrow .eq{font-family:'Fredoka One',cursive;font-size:1.45rem;color:var(--navy)}
+.fillin{width:96px;padding:10px;border:3px solid #D9E0EC;border-radius:12px;font-size:1.25rem;font-weight:900;text-align:center;font-family:inherit}
+.fillin.ok{border-color:var(--grass);background:#E5F7DC}
+.fillin.bad{border-color:var(--bad);background:#FBE7E7}
+.matchgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.mcol{display:flex;flex-direction:column;gap:10px}
+.mitem{padding:14px;border-radius:13px;border:3px solid #D9E0EC;background:#F8FAFF;font-weight:900;font-size:1.0rem;cursor:pointer;text-align:center;font-family:'Fredoka One',cursive;color:var(--navy);transition:all .15s}
+.mitem.sel{border-color:var(--gold);background:#FFF6E1;transform:scale(1.04)}
+.mitem.done{border-color:var(--grass);background:#E5F7DC;color:var(--ok);cursor:default}
+.mitem.shake{animation:shake .4s}
+.scoreline{font-weight:900;color:var(--navy);margin-top:8px}
+.bigX{position:fixed;inset:0;display:none;align-items:center;justify-content:center;font-size:11rem;color:var(--bad);z-index:200;pointer-events:none;text-shadow:0 6px 30px rgba(0,0,0,.25);font-weight:900}
+.confetti-bit{position:fixed;top:-12px;z-index:300;pointer-events:none;border-radius:3px}
+.final-score{font-family:'Bangers',cursive;font-size:4.6rem;color:var(--gold);text-shadow:2px 3px 0 var(--navy)}
+.center{text-align:center}
+ul.tips{margin:8px 0 0 24px}
+ul.tips li{margin:5px 0}
+.slide.on > h2,.slide.on > p,.slide.on > .card,.slide.on > .flipgrid,.slide.on > .qbox,.slide.on > .matchgrid,.slide.on > .videowrap,.slide.on > .amodel{animation:slideIn .45s ease both}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hud .big.bump{animation:bump .45s ease}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.55);color:#E0AC3C}100%{transform:scale(1)}}
+.btn-go{animation:pulseGo 2.2s ease-in-out infinite}
+@keyframes pulseGo{0%,100%{box-shadow:0 0 0 0 rgba(224,172,60,.55)}50%{box-shadow:0 0 0 9px rgba(224,172,60,0)}}
+.levelup{position:fixed;top:74px;left:50%;transform:translateX(-50%) translateY(-20px);background:#1B2C5C;color:#fff;font-weight:800;padding:10px 22px;border-radius:999px;border:2px solid #E0AC3C;opacity:0;z-index:60;pointer-events:none;box-shadow:0 8px 22px rgba(0,0,0,.25)}
+.levelup.show{animation:lvl 1.8s ease both}
+@keyframes lvl{0%{opacity:0;transform:translateX(-50%) translateY(-20px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-14px)}}
+.bonuspill{display:inline-block;background:#eaf6e0;color:#3c6b1f;border:2px solid #86D464;border-radius:999px;padding:3px 12px;font-weight:800;font-size:.85rem;margin-bottom:6px}
+.setnotice{display:inline-block;background:#FFF6E1;color:#8A5A00;border:2px solid var(--gold);border-radius:999px;padding:5px 16px;font-weight:800;font-size:.88rem;margin-bottom:10px}
+.reminder{background:#eef7ff;border-left:5px solid #7CC6FF;border-radius:8px;padding:10px 14px;margin:10px 0;font-weight:600;color:#23527a}
+.reminder b{color:#1B2C5C}
+.thinkbox{background:#F0F2FF;border-left:5px solid #6E7EE8;border-radius:8px;padding:14px 16px;margin:12px 0}
+.thinkbox h4{margin:0 0 6px 0;color:#3A46B0;font-size:1rem}
+.guidedbox{background:#FFF6E1;border-left:5px solid var(--gold);border-radius:8px;padding:14px 16px;margin:12px 0}
+.guidedbox h4{margin:0 0 6px 0;color:#8A5A00;font-size:1rem}
+.pictureit{background:#F3EEFF;border:2px dashed #B7A3F0;border-radius:10px;padding:12px 16px;margin:12px 0}
+.pictureit h4{margin:0 0 6px 0;color:#5B3FBE;font-size:.95rem}
+.yourturn-label{display:inline-block;background:var(--navy);color:#fff;font-weight:900;font-size:.85rem;padding:5px 14px;border-radius:999px;margin:14px 0 8px 0}
+.videowrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:16px;margin:14px 0;border:3px solid var(--navy)}
+.videowrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.videocard{position:relative;display:block;border-radius:16px;overflow:hidden;margin:14px 0;border:3px solid var(--navy);text-decoration:none;background:#000}
+.videocard img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;opacity:.88;transition:opacity .2s}
+.videocard:hover img{opacity:1}
+.videocard .playbtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:74px;height:74px;background:rgba(224,172,60,.95);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;box-shadow:0 6px 20px rgba(0,0,0,.4);transition:transform .15s}
+.videocard:hover .playbtn{transform:translate(-50%,-50%) scale(1.08)}
+.videocard .videocard-label{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent);color:#fff;font-weight:800;padding:10px 14px;font-size:.9rem}
+.flipgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin:14px 0}
+.flip{perspective:800px;cursor:pointer;height:152px}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800}
+.flip-front{background:linear-gradient(135deg,var(--navy),#314580);color:#fff;font-family:'Fredoka One',cursive;font-size:1.05rem;position:relative;line-height:1.3;padding:14px 40px 14px 16px}
+.speak-btn{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.22);color:#fff;font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s,background .15s}
+.speak-btn:hover{background:rgba(255,255,255,.4);transform:scale(1.08)}
+.speak-btn.speaking{animation:pulseSpeak .6s ease-in-out infinite}
+@keyframes pulseSpeak{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+.flip-back{background:linear-gradient(135deg,#FFF6E1,#FFE9C7);color:var(--ink);transform:rotateY(180deg);font-size:.94rem;line-height:1.4;border:3px solid var(--gold);padding:16px 18px}
+.amodel{display:flex;gap:0;margin:16px 0;justify-content:center;align-items:flex-end;flex-wrap:wrap}
+.amodel-side{display:flex;flex-direction:column;justify-content:flex-end;gap:0;margin-right:4px}
+.amodel-toplabels{display:flex;gap:4px;margin-left:64px;margin-bottom:4px}
+.amodel-cell{background:linear-gradient(135deg,var(--sky),#5AA9E8);border:2px solid #2E7DC7;border-radius:8px;color:#fff;font-family:'Bangers',cursive;font-size:1.3rem;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.amodel-cell.gold{background:linear-gradient(135deg,var(--gold),#F2C465);border-color:#C98F1E}
+.amodel-cell.grass{background:linear-gradient(135deg,var(--grass),#5DB041);border-color:#3D8A30}
+.amodel-cell.pumpkin{background:linear-gradient(135deg,var(--pumpkin),#F09A5C);border-color:#C25F1D}
+.amodel-tag{font-family:'Fredoka One',cursive;font-weight:800;color:var(--navy);font-size:.82rem;text-align:center;background:#fff;border:2px solid #D9E0EC;border-radius:8px;padding:6px 2px}
+.plustotal{text-align:center;font-family:'Fredoka One',cursive;color:var(--navy);font-size:1.15rem;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="hud">
+  <div class="hud-left"><div class="kc-logo kc-logo-onhud">
+    <span class="kc-logo-box">KC</span>
+    <span class="kc-logo-text">
+      <span class="kc-logo-name">KingCretot</span>
+      <span class="kc-logo-tagline">Educate. Empower. Excel.</span>
+    </span>
+  </div>
+  <span class="hud-title">🏔️ Math Foundations — Multiplication Mountain, Lesson 1</span>
+  </div>
+  <div class="hud-right">
+    <div class="stat">🏆 Score: <span class="big" id="hudScore">0</span>/100</div>
+    <div class="stat">⭐ XP: <span class="big" id="hudXP">0</span><span class="xpbar"><span class="xpfill" id="xpFill"></span></span></div>
+    <div class="stat">🪙 <span class="big" id="hudCoins">0</span></div>
+  </div>
+</div>
+<div class="levelup" id="levelup"></div>
+<div class="bigX" id="bigX">✗</div>
+<div id="lockScreen" style="display:none;position:fixed;inset:0;background:linear-gradient(135deg,#1B2C5C,#0f1a3a);z-index:500;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:24px;padding:34px;max-width:440px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.35)">
+    <div style="font-size:3rem;margin-bottom:10px">🔒</div>
+    <h2 style="color:var(--navy)">This lesson is locked</h2>
+    <p style="margin:10px 0 18px;color:#555">You have used all 3 attempts without reaching 90/100. Ask your teacher for the unlock code to try again with fresh questions.</p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <input id="pinInput" type="password" inputmode="numeric" placeholder="Unlock code" class="fillin" style="width:140px">
+      <button class="btn btn-pri" id="pinSubmitBtn">Unlock</button>
+    </div>
+    <p id="pinMsg" style="margin-top:12px;font-weight:800"></p>
+  </div>
+</div>
+<div class="wrap">
+
+<!-- SLIDE 0: Rules & Quest -->
+<div class="slide on" data-slide="0">
+  <div class="kc-logo kc-logo-large">
+    <span class="kc-logo-box">KC</span>
+    <span class="kc-logo-text">
+      <span class="kc-logo-name">KingCretot</span>
+      <span class="kc-logo-tagline">Educate. Empower. Excel.</span>
+    </span>
+  </div>
+  <span class="badge">Math Foundations • Multiplication Mountain • Lesson 1</span>
+  <h1>Meet the Area Model</h1>
+  <h2>Break big multiplication into easy pieces 🏔️✖️</h2>
+  <div class="card card-sky" id="priorCompletionBanner" style="display:none">
+    <h3>📋 Your Progress on This Lesson</h3>
+    <p id="priorCompletionText"></p>
+  </div>
+  <div class="card card-gold">
+    <h3>🏆 How Scoring Works</h3>
+    <p>Welcome to Multiplication Mountain! This lesson is worth <b>100 points</b>. You get <b>2 tries</b> per question — if you miss twice, you will see the right answer and why. Score <b>90 or higher</b> to master it. You get <b>3 lesson attempts</b> total; if you do not reach 90 after 3 tries, ask your teacher for the unlock code.</p>
+  </div>
+  <div class="card card-sky">
+    <h3>🗺️ Today's Quest</h3>
+    <ul class="tips">
+      <li>Warm up your multiplication brain</li>
+      <li>Watch a video about the area model</li>
+      <li>Learn what factors, products, and partial products mean</li>
+      <li>Break apart a garden plot to multiply it</li>
+      <li>Multiply 2-digit numbers using the area model</li>
+      <li>Solve real problems: theater seats, tiled patios, and more!</li>
+    </ul>
+  </div>
+  <div class="card" id="nameCaptureCard">
+    <h3>👤 Before You Start</h3>
+    <p style="margin-bottom:10px">What is your name? This helps your teacher or parent see your score without checking your screen.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <input class="fillin" id="studentFirstNameField" inputmode="text" aria-label="student first name" placeholder="First name" style="flex:1;min-width:220px;font-size:1.05rem;padding:12px 14px">
+      <input class="fillin" id="studentLastNameField" inputmode="text" aria-label="student last name" placeholder="Last name" style="flex:1;min-width:220px;font-size:1.05rem;padding:12px 14px">
+    </div>
+  </div>
+  <div class="nav"><span></span><button class="btn btn-go" data-go="1">Next →</button></div>
+  <div class="dots" id="dots"></div>
+</div>
+
+<!-- SLIDE 1: Warm-Up -->
+<div class="slide" data-slide="1">
+  <h2>🔥 Warm-Up (Multiplication Brain Stretch)</h2>
+  <p>Let's warm up before we climb the mountain — with a few things you would actually multiply in real life.</p>
+  <div class="qset" data-set="0">
+    <div class="qbox" data-q="w1_s0" data-pts="5" data-logic="4 rows of 5 desks = 4 x 5 = 20 desks.">
+      <span class="pts">+5</span>
+      <p class="qtext">A classroom has 4 rows of 5 desks. How many desks in all?</p>
+      <div class="opts">
+        <button class="opt">9</button>
+        <button class="opt" data-c="1">20</button>
+        <button class="opt">45</button>
+        <button class="opt">25</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="w2_s0" data-pts="5" data-logic="6x7=42 and 5x9=45. 45 is bigger.">
+      <span class="pts">+5</span>
+      <p class="qtext">Which is bigger: 6 × 7 or 5 × 9?</p>
+      <div class="opts">
+        <button class="opt">6 × 7</button>
+        <button class="opt" data-c="1">5 × 9</button>
+        <button class="opt">They are equal</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="w3_s0" data-pts="5" data-logic="7 x 8 = 56.">
+      <span class="pts">+5</span>
+      <p class="qtext">7 × 8 = ?</p>
+      <div class="opts">
+        <button class="opt">54</button>
+        <button class="opt" data-c="1">56</button>
+        <button class="opt">64</button>
+        <button class="opt">48</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-fq="w4_s0" data-pts="5" data-ans="54" data-logic="6 trays x 9 muffins = 54 muffins.">
+      <span class="pts">+5</span>
+      <p class="qtext">A baker makes 6 trays of 9 muffins each. How many muffins in all?</p>
+      <div class="fillrow">
+        <span class="eq">6 trays × 9 muffins =</span>
+        <input class="fillin" inputmode="numeric" aria-label="answer">
+        <button class="btn btn-pri" data-check="w4_s0">Check</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" data-go="0">← Back</button><button class="btn btn-go" data-go="2">Next →</button></div>
+  <div class="dots" id="dots1"></div>
+</div>
+
+<!-- SLIDE 2: Watch & Learn -->
+<div class="slide" data-slide="2">
+  <h2>📺 Watch & Learn</h2>
+  <p>Watch this video about the area model — a farmer uses it to plan his fields!</p>
+  <a href="https://www.youtube.com/watch?v=WYJsQo7ZTC4" target="_blank" rel="noopener" class="videocard">
+    <img src="https://img.youtube.com/vi/WYJsQo7ZTC4/hqdefault.jpg" alt="Area Model Multiplication Song by Numberock — click to watch on YouTube">
+    <span class="playbtn">▶</span>
+    <span class="videocard-label">Area Model Multiplication Song — Numberock · Click to watch</span>
+  </a>
+  <div class="reminder"><b>While you watch:</b> listen for the words "factor," "product," and "partial product" — you will see them a lot in this lesson!</div>
+  <div class="nav"><button class="btn btn-back" data-go="1">← Back</button><button class="btn btn-go" data-go="3">Next →</button></div>
+</div>
+
+<!-- SLIDE 3: Vocab -->
+<div class="slide" data-slide="3">
+  <h2>🗂️ Word Wrangler — Flip the Cards</h2>
+  <p>Tap a card to flip it and learn the word. Tap the 🔊 to hear it read aloud.</p>
+  <div class="flipgrid">
+    <div class="flip" data-flip>
+      <div class="flip-inner">
+        <div class="flip-face flip-front">Factor<button class="speak-btn" data-speak="factor" onclick="event.stopPropagation()">🔊</button></div>
+        <div class="flip-face flip-back">A number you multiply. In 6 × 7 = 42, the factors are 6 and 7.</div>
+      </div>
+    </div>
+    <div class="flip" data-flip>
+      <div class="flip-inner">
+        <div class="flip-face flip-front">Product<button class="speak-btn" data-speak="product" onclick="event.stopPropagation()">🔊</button></div>
+        <div class="flip-face flip-back">The answer to a multiplication problem. In 6 × 7 = 42, the product is 42.</div>
+      </div>
+    </div>
+    <div class="flip" data-flip>
+      <div class="flip-inner">
+        <div class="flip-face flip-front">Area Model<button class="speak-btn" data-speak="area model" onclick="event.stopPropagation()">🔊</button></div>
+        <div class="flip-face flip-back">A rectangle split into smaller boxes to make multiplying easier — like tiling a floor in sections.</div>
+      </div>
+    </div>
+    <div class="flip" data-flip>
+      <div class="flip-inner">
+        <div class="flip-face flip-front">Partial Product<button class="speak-btn" data-speak="partial product" onclick="event.stopPropagation()">🔊</button></div>
+        <div class="flip-face flip-back">One small answer inside the area model. Add all the partial products to get the total.</div>
+      </div>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" data-go="2">← Back</button><button class="btn btn-go" data-go="4">Next →</button></div>
+</div>
+
+<!-- SLIDE 4: Teaching 1 - Break Numbers Apart -->
+<div class="slide" data-slide="4">
+  <h2>1️⃣ Break Numbers Apart</h2>
+  <div class="thinkbox">
+    <h4>🧠 Watch Me Think</h4>
+    <p>A community garden plot is <b>23</b> feet long and <b>4</b> feet wide. How many square feet is that? Instead of multiplying 23 × 4 all at once, I break 23 into <b>20 + 3</b> — easy chunks!</p>
+  </div>
+  <div class="pictureit">
+    <h4>🖼️ Picture It</h4>
+    <div class="amodel">
+      <div class="amodel-side">
+        <div style="height:40px"></div>
+        <div class="amodel-tag" style="height:70px;display:flex;align-items:center;justify-content:center">4 ft</div>
+      </div>
+      <div>
+        <div class="amodel-toplabels">
+          <div class="amodel-tag" style="width:130px">20 ft</div>
+          <div class="amodel-tag" style="width:60px">3 ft</div>
+        </div>
+        <div style="display:flex;gap:4px">
+          <div class="amodel-cell gold" style="width:130px;height:70px">80</div>
+          <div class="amodel-cell" style="width:60px;height:70px">12</div>
+        </div>
+      </div>
+    </div>
+    <p class="plustotal">80 + 12 = <b>92 sq ft</b></p>
+  </div>
+  <div class="guidedbox">
+    <h4>🤝 Let's Try Together</h4>
+    <p>A flower bed is 14 ft long and 3 ft wide. Break 14 into 10 + 4. 10×3=30, and 4×3=12. 30 + 12 = <b>42 sq ft</b>!</p>
+  </div>
+  <span class="yourturn-label">YOUR TURN</span>
+  <div class="qset" data-set="0">
+    <div class="qbox" data-q="t1a_s0" data-pts="5" data-logic="23 = 20 + 3. Breaking apart the tens and ones makes multiplying easier.">
+      <span class="pts">+5</span>
+      <p class="qtext">To break apart 23 for multiplying, you split it into:</p>
+      <div class="opts">
+        <button class="opt" data-c="1">20 + 3</button>
+        <button class="opt">22 + 1</button>
+        <button class="opt">23 + 0</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="t1b_s0" data-pts="5" data-logic="A patio 32 ft by 2 ft: break 32 into 30 + 2.">
+      <span class="pts">+5</span>
+      <p class="qtext">A patio is 32 ft long. To use the area model, you would break 32 into:</p>
+      <div class="opts">
+        <button class="opt" data-c="1">30 + 2</button>
+        <button class="opt">3 + 20</button>
+        <button class="opt">16 + 16</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" data-go="3">← Back</button><button class="btn btn-go" data-go="5">Next →</button></div>
+</div>
+
+<!-- SLIDE 5: Teaching 2 - 2-digit x 1-digit -->
+<div class="slide" data-slide="5">
+  <h2>2️⃣ Rows in the Theater</h2>
+  <div class="thinkbox">
+    <h4>🧠 Watch Me Think</h4>
+    <p>A small theater has <b>36</b> seats in every row, and there are <b>5</b> rows. How many seats total? I break 36 into <b>30 + 6</b>, multiply each part by 5, then add.</p>
+  </div>
+  <div class="pictureit">
+    <h4>🖼️ Picture It</h4>
+    <div class="amodel">
+      <div class="amodel-side">
+        <div style="height:40px"></div>
+        <div class="amodel-tag" style="height:70px;display:flex;align-items:center;justify-content:center">5</div>
+      </div>
+      <div>
+        <div class="amodel-toplabels">
+          <div class="amodel-tag" style="width:130px">30</div>
+          <div class="amodel-tag" style="width:60px">6</div>
+        </div>
+        <div style="display:flex;gap:4px">
+          <div class="amodel-cell grass" style="width:130px;height:70px">150</div>
+          <div class="amodel-cell pumpkin" style="width:60px;height:70px">30</div>
+        </div>
+      </div>
+    </div>
+    <p class="plustotal">150 + 30 = <b>180 seats</b></p>
+  </div>
+  <div class="guidedbox">
+    <h4>🤝 Let's Try Together</h4>
+    <p>A bus has 42 seats in a section, times 3 buses. Break 42 into 40 + 2. 40×3=120, 2×3=6. 120 + 6 = <b>126 seats</b>!</p>
+  </div>
+  <span class="yourturn-label">YOUR TURN</span>
+  <div class="qset" data-set="0">
+    <div class="qbox" data-q="t2a_s0" data-pts="5" data-logic="30 x 5 = 150 (the tens part).">
+      <span class="pts">+5</span>
+      <p class="qtext">In the theater problem (36 × 5), what is 30 × 5?</p>
+      <div class="opts">
+        <button class="opt">30</button>
+        <button class="opt" data-c="1">150</button>
+        <button class="opt">180</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-fq="t2b_s0" data-pts="5" data-ans="30" data-logic="6 x 5 = 30 (the ones part).">
+      <span class="pts">+5</span>
+      <div class="fillrow"><span class="eq">In 36 × 5, what is 6 × 5?</span><input class="fillin" inputmode="numeric" aria-label="answer"><button class="btn btn-pri" data-check="t2b_s0">Check</button></div>
+      <p class="feedback"></p>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" data-go="4">← Back</button><button class="btn btn-go" data-go="6">Next →</button></div>
+</div>
+
+<!-- SLIDE 6: Teaching 3 - 2-digit x 2-digit -->
+<div class="slide" data-slide="6">
+  <h2>3️⃣ Tiling a Patio</h2>
+  <div class="thinkbox">
+    <h4>🧠 Watch Me Think</h4>
+    <p>A patio is <b>24</b> ft by <b>13</b> ft. Now BOTH sides break apart: 24 = 20 + 4, and 13 = 10 + 3. That makes <b>four</b> smaller rectangles to add up!</p>
+  </div>
+  <div class="pictureit">
+    <h4>🖼️ Picture It</h4>
+    <div class="amodel">
+      <div class="amodel-side">
+        <div class="amodel-tag" style="width:44px;height:70px;display:flex;align-items:center;justify-content:center">10</div>
+        <div class="amodel-tag" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;margin-top:4px">3</div>
+      </div>
+      <div>
+        <div class="amodel-toplabels">
+          <div class="amodel-tag" style="width:130px">20</div>
+          <div class="amodel-tag" style="width:60px">4</div>
+        </div>
+        <div style="display:flex;gap:4px">
+          <div class="amodel-cell" style="width:130px;height:70px">200</div>
+          <div class="amodel-cell gold" style="width:60px;height:70px">40</div>
+        </div>
+        <div style="display:flex;gap:4px;margin-top:4px">
+          <div class="amodel-cell grass" style="width:130px;height:44px">60</div>
+          <div class="amodel-cell pumpkin" style="width:60px;height:44px">12</div>
+        </div>
+      </div>
+    </div>
+    <p class="plustotal">200 + 40 + 60 + 12 = <b>312 sq ft</b></p>
+  </div>
+  <div class="guidedbox">
+    <h4>🤝 Let's Try Together</h4>
+    <p>A field is 32 × 12. Break into 30+2 and 10+2: 30×10=300, 30×2=60, 2×10=20, 2×2=4. 300+60+20+4 = <b>384</b>!</p>
+  </div>
+  <span class="yourturn-label">YOUR TURN</span>
+  <div class="qset" data-set="0">
+    <div class="qbox" data-q="t3a_s0" data-pts="5" data-logic="20 x 10 = 200, the biggest partial product.">
+      <span class="pts">+5</span>
+      <p class="qtext">In the patio problem (24 × 13), what is 20 × 10?</p>
+      <div class="opts">
+        <button class="opt">40</button>
+        <button class="opt" data-c="1">200</button>
+        <button class="opt">2000</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="t3b_s0" data-pts="5" data-logic="A 2-digit by 2-digit area model always makes 4 partial products (2 parts x 2 parts).">
+      <span class="pts">+5</span>
+      <p class="qtext">A 2-digit by 2-digit area model always makes how many small rectangles?</p>
+      <div class="opts">
+        <button class="opt">2</button>
+        <button class="opt">3</button>
+        <button class="opt" data-c="1">4</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" data-go="5">← Back</button><button class="btn btn-go" data-go="7">Next →</button></div>
+</div>
+
+<!-- SLIDE 7: Bonus Practice -->
+<div class="slide" data-slide="7">
+  <h2>🌟 Bonus Practice</h2>
+  <span class="bonuspill">XP only — no penalty, just practice!</span>
+  <p>A few more real-world reps before we move on.</p>
+  <div class="qset" data-set="0">
+    <div class="qbox" data-q="b1_s0" data-bonus="1" data-logic="8 rows x 10 cars = 80 cars.">
+      <p class="qtext">A parking garage has 8 rows of 10 cars each. How many cars fit?</p>
+      <div class="opts">
+        <button class="opt">18</button>
+        <button class="opt" data-c="1">80</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="b2_s0" data-bonus="1" data-logic="6 rows x 12 snacks = 72 snacks.">
+      <p class="qtext">A vending machine holds 6 rows of 12 snacks each. How many snacks total?</p>
+      <div class="opts">
+        <button class="opt" data-c="1">72</button>
+        <button class="opt">18</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="b3_s0" data-bonus="1" data-logic="9 packs x 20 pencils = 180 pencils.">
+      <p class="qtext">A classroom orders 9 packs of 20 pencils each. How many pencils in all?</p>
+      <div class="opts">
+        <button class="opt">29</button>
+        <button class="opt" data-c="1">180</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="b4_s0" data-bonus="1" data-logic="7 rows x 11 stalks = 77 stalks.">
+      <p class="qtext">A farmer plants 7 rows of 11 corn stalks each. How many stalks total?</p>
+      <div class="opts">
+        <button class="opt" data-c="1">77</button>
+        <button class="opt">18</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" data-go="6">← Back</button><button class="btn btn-go" data-go="8">Next →</button></div>
+</div>
+
+<!-- SLIDE 8: Match-Up -->
+<div class="slide" data-slide="8">
+  <h2>🔗 Match-Up</h2>
+  <p>Tap a real-world problem, then tap its answer. Worth 10 points total.</p>
+  <div class="matchgrid">
+    <div class="mcol" id="mLeft"></div>
+    <div class="mcol" id="mRight"></div>
+  </div>
+  <p class="scoreline" id="matchScoreline">Matched: 0 / 5</p>
+  <div class="nav"><button class="btn btn-back" data-go="7">← Back</button><button class="btn btn-go" data-go="9" id="matchNextBtn">Next →</button></div>
+</div>
+
+<!-- SLIDE 9: Type-It -->
+<div class="slide" data-slide="9">
+  <h2>⌨️ Type-It</h2>
+  <p>Type the missing partial product or total.</p>
+  <div class="qset" data-set="0">
+    <div class="qbox" data-fq="ty1_s0" data-pts="5" data-ans="240" data-logic="40 x 6 = 240.">
+      <span class="pts">+5</span>
+      <div class="fillrow"><span class="eq">A parking lot has 6 rows of 40 spaces. 40 × 6 =</span><input class="fillin" inputmode="numeric" aria-label="answer"><button class="btn btn-pri" data-check="ty1_s0">Check</button></div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-fq="ty2_s0" data-pts="5" data-ans="21" data-logic="7 x 3 = 21 (ones x ones part).">
+      <span class="pts">+5</span>
+      <div class="fillrow"><span class="eq">In 27 × 13, the ones-by-ones part is 7 × 3 =</span><input class="fillin" inputmode="numeric" aria-label="answer"><button class="btn btn-pri" data-check="ty2_s0">Check</button></div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-fq="ty3_s0" data-pts="5" data-ans="252" data-logic="18 boxes x 14 apples: 10x18=180, 4x18=72, 180+72=252.">
+      <span class="pts">+5</span>
+      <div class="fillrow"><span class="eq">18 boxes hold 14 apples each. Total apples =</span><input class="fillin" inputmode="numeric" aria-label="answer"><button class="btn btn-pri" data-check="ty3_s0">Check</button></div>
+      <p class="feedback"></p>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" data-go="8">← Back</button><button class="btn btn-go" data-go="10">Next →</button></div>
+</div>
+
+<!-- SLIDE 10: Bonus Speed Round -->
+<div class="slide" data-slide="10">
+  <h2>⚡ Bonus Speed Round</h2>
+  <span class="bonuspill">XP only — go fast!</span>
+  <div class="qset" data-set="0">
+    <div class="qbox" data-q="bs1_s0" data-bonus="1" data-logic="5 x 16 = 80.">
+      <p class="qtext">5 boxes of 16 crayons each = ?</p>
+      <div class="opts">
+        <button class="opt" data-c="1">80</button>
+        <button class="opt">21</button>
+        <button class="opt">75</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="bs2_s0" data-bonus="1" data-logic="9 x 12 = 108.">
+      <p class="qtext">9 shelves of 12 cans each = ?</p>
+      <div class="opts">
+        <button class="opt">21</button>
+        <button class="opt" data-c="1">108</button>
+        <button class="opt">96</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="bs3_s0" data-bonus="1" data-logic="4 x 22 = 88.">
+      <p class="qtext">4 vans carrying 22 passengers each = ?</p>
+      <div class="opts">
+        <button class="opt">26</button>
+        <button class="opt" data-c="1">88</button>
+        <button class="opt">80</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="bs4_s0" data-bonus="1" data-logic="6 x 18 = 108.">
+      <p class="qtext">6 rows of 18 plants each = ?</p>
+      <div class="opts">
+        <button class="opt">24</button>
+        <button class="opt" data-c="1">108</button>
+        <button class="opt">98</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" data-go="9">← Back</button><button class="btn btn-go" data-go="11">Next →</button></div>
+</div>
+
+<!-- SLIDE 11: Boss Battle -->
+<div class="slide" data-slide="11">
+  <h2>👑 Boss Battle</h2>
+  <p>The final climb — real problems, all mixed up!</p>
+  <div class="qset" data-set="0">
+    <div class="qbox" data-q="boss1_s0" data-pts="5" data-logic="12 boxes of 24 pencils: 12x24 = 288.">
+      <span class="pts">+5</span>
+      <p class="qtext">A store has 12 boxes with 24 pencils each. How many pencils total?</p>
+      <div class="opts">
+        <button class="opt">36</button>
+        <button class="opt">248</button>
+        <button class="opt" data-c="1">288</button>
+        <button class="opt">300</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="boss2_s0" data-pts="5" data-logic="15 rows x 16 chairs = 240 chairs.">
+      <span class="pts">+5</span>
+      <p class="qtext">A gym sets up 15 rows of 16 chairs for an assembly. How many chairs?</p>
+      <div class="opts">
+        <button class="opt">31</button>
+        <button class="opt" data-c="1">240</button>
+        <button class="opt">180</button>
+        <button class="opt">210</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="boss3_s0" data-pts="5" data-logic="A garden 25 ft x 8 ft = 200 sq ft.">
+      <span class="pts">+5</span>
+      <p class="qtext">A garden plot is 25 ft long and 8 ft wide. What is its area?</p>
+      <div class="opts">
+        <button class="opt">33</button>
+        <button class="opt">160</button>
+        <button class="opt" data-c="1">200</button>
+        <button class="opt">225</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="boss4_s0" data-pts="5" data-logic="20x10=200 is the biggest partial product for 23x14 (23=20+3, 14=10+4).">
+      <span class="pts">+5</span>
+      <p class="qtext">For 23 × 14 using the area model, which partial product is the biggest?</p>
+      <div class="opts">
+        <button class="opt" data-c="1">20 × 10</button>
+        <button class="opt">20 × 4</button>
+        <button class="opt">3 × 10</button>
+        <button class="opt">3 × 4</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+    <div class="qbox" data-q="boss5_s0" data-pts="5" data-logic="18 tables x 6 people = 108 people.">
+      <span class="pts">+5</span>
+      <p class="qtext">A banquet hall has 18 tables that seat 6 people each. How many people fit?</p>
+      <div class="opts">
+        <button class="opt">24</button>
+        <button class="opt">96</button>
+        <button class="opt" data-c="1">108</button>
+        <button class="opt">120</button>
+      </div>
+      <p class="feedback"></p>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" data-go="10">← Back</button><button class="btn btn-go" data-go="12">See My Score! 🏆</button></div>
+</div>
+
+<!-- SLIDE 12: Final -->
+<div class="slide" data-slide="12">
+  <div class="center">
+    <span class="badge" id="finalBadge">Lesson Complete</span>
+    <h1 id="finalHeadline">Great Job!</h1>
+    <p class="final-score" id="finalScoreDisplay"><span id="finalScore">0</span>/100</p>
+    <h2 id="finalTitle">Multiplication Mountain Climber! ⭐</h2>
+    <p id="priorAttemptNote" style="display:none;margin-top:6px;color:#555"></p>
+    <div class="card card-sky" style="text-align:left;margin-top:20px">
+      <h3 id="finalMessageHeading"></h3>
+      <p id="finalMessageBody"></p>
+    </div>
+    <div style="margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-back" data-replay onclick="location.reload()">Try Again 🔄</button>
+      <a class="btn btn-go" id="continueLink" href="#" style="display:none;text-decoration:none">Continue to Next Lesson →</a>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const TOTAL_SLIDES = 13;
+const FINAL_INDEX = 12;
+const state = { slide:0, score:0, xp:0, coins:0, answered:{}, attempted:{}, wrongCount:{}, matchDone:0 };
+const MAX_ATTEMPTS = 2;
+const MODULE_ID = 'mathfoundations-multiplicationmountain-l1';
+const MASTERY_THRESHOLD = 90;
+const MAX_FAILED_ATTEMPTS = 3;
+const INSTRUCTOR_PIN = '4110';
+const NEXT_LESSON_URL = '';
+const PROGRESS_KEY = 'kce_mathfoundations_progress';
+
+function loadProgress(){ try{ return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); }catch(e){ return {}; } }
+function saveModuleResult(score){
+  const all = loadProgress(); const pct = Math.round(score);
+  const prev = all[MODULE_ID] || { score:-1, failedAttempts:0, locked:false };
+  const passedNow = pct >= MASTERY_THRESHOLD;
+  const best = Math.max(pct, prev.score);
+  let failedAttempts = prev.failedAttempts || 0;
+  let locked = !!prev.locked;
+  if (!passedNow && !prev.passed) { failedAttempts += 1; if (failedAttempts >= MAX_FAILED_ATTEMPTS) locked = true; }
+  if (passedNow) { locked = false; }
+  all[MODULE_ID] = { score: best, passed: passedNow || !!prev.passed, lastScore: pct, lastPassed: passedNow, date: new Date().toISOString(), attempts: (prev.attempts || 0) + 1, failedAttempts, locked };
+  try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(all)); }catch(e){}
+  return all[MODULE_ID];
+}
+function getModuleResult(){ const all = loadProgress(); return all[MODULE_ID] || null; }
+function unlockWithPin(pin){
+  if (pin !== INSTRUCTOR_PIN) return false;
+  const all = loadProgress(); const rec = all[MODULE_ID];
+  if (rec){ rec.locked = false; rec.failedAttempts = 0; try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(all)); }catch(e){} }
+  return true;
+}
+
+const MATHFOUNDATIONS_FORMSPREE_ID = 'mvkpkngb';
+function reportProgress(score, rec){
+  try{
+    const name = (localStorage.getItem('kceMathFoundationsStudentName') || '').trim() || 'Unnamed Student';
+    const payload = { student: name, module: MODULE_ID, score: score, mastered: score >= MASTERY_THRESHOLD, failedAttempts: rec ? rec.failedAttempts : 0, locked: rec ? rec.locked : false, date: new Date().toISOString() };
+    if (MATHFOUNDATIONS_FORMSPREE_ID && MATHFOUNDATIONS_FORMSPREE_ID.indexOf('REPLACE_WITH') === -1){
+      fetch('https://formspree.io/f/' + MATHFOUNDATIONS_FORMSPREE_ID, { method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify(payload) }).catch(()=>{});
+    }
+  }catch(e){}
+}
+
+function captureName(){
+  const firstField = document.getElementById('studentFirstNameField');
+  const lastField = document.getElementById('studentLastNameField');
+  if (firstField && lastField){
+    firstField.addEventListener('change', saveName); lastField.addEventListener('change', saveName);
+    firstField.value = localStorage.getItem('kceMathFoundationsStudentFirstName') || '';
+    lastField.value = localStorage.getItem('kceMathFoundationsStudentLastName') || '';
+  }
+  function saveName(){
+    const first = firstField.value.trim(); const last = lastField.value.trim(); const full = (first + ' ' + last).trim();
+    if (full) localStorage.setItem('kceMathFoundationsStudentName', full);
+    if (first) localStorage.setItem('kceMathFoundationsStudentFirstName', first);
+    if (last) localStorage.setItem('kceMathFoundationsStudentLastName', last);
+  }
+}
+captureName();
+
+function showPriorCompletionBanner(){
+  const rec = getModuleResult(); const el = document.getElementById('priorCompletionBanner'); if (!el || !rec) return;
+  const line = document.getElementById('priorCompletionText');
+  if (rec.passed){ line.innerHTML = '✅ You already passed this lesson — best score <b>' + rec.score + '/100</b>. Play again anytime to sharpen your skills!'; }
+  else { line.innerHTML = '📝 You tried this lesson before — best score so far: <b>' + rec.score + '/100</b> (' + (rec.failedAttempts||0) + ' of ' + MAX_FAILED_ATTEMPTS + ' attempts used). Score ' + MASTERY_THRESHOLD + '+ to master it!'; }
+  el.style.display = 'block';
+}
+
+function checkLockedOnLoad(){
+  const rec = getModuleResult();
+  if (rec && rec.locked){
+    document.getElementById('lockScreen').style.display = 'flex';
+    document.querySelector('.hud').style.display = 'none';
+  }
+}
+document.getElementById('pinSubmitBtn') && document.getElementById('pinSubmitBtn').addEventListener('click', ()=>{
+  const val = document.getElementById('pinInput').value.trim();
+  const msg = document.getElementById('pinMsg');
+  if (unlockWithPin(val)){
+    msg.textContent = '✅ Unlocked! Reloading...'; msg.style.color = 'var(--ok)';
+    setTimeout(()=>location.reload(), 700);
+  } else {
+    msg.textContent = 'That code is not right. Ask your teacher for the unlock code.'; msg.style.color = 'var(--bad)';
+  }
+});
+
+function updateHud(){
+  document.getElementById('hudScore').textContent = state.score;
+  document.getElementById('hudXP').textContent = state.xp;
+  document.getElementById('hudCoins').textContent = state.coins;
+  document.getElementById('xpFill').style.width = Math.min(100, state.xp) + '%';
+}
+function bump(id){ const el = document.getElementById(id); if(!el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+function addScore(p){ state.score += p; updateHud(); bump('hudScore'); }
+function addXP(x){ state.xp += x; updateHud(); }
+function addCoins(c){ state.coins += c; updateHud(); }
+function flashX(){ const el = document.getElementById('bigX'); el.style.display='flex'; setTimeout(()=>el.style.display='none', 380); }
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function shuffleAllOptions(){ document.querySelectorAll('.opts').forEach(box=>{ const kids = Array.from(box.children); shuffle(kids); kids.forEach(k=>box.appendChild(k)); }); }
+function go(n){ state.slide = n; document.querySelectorAll('.slide').forEach(s=>s.classList.toggle('on', +s.dataset.slide === n)); buildDots(n); window.scrollTo({top:0, behavior:'smooth'}); }
+function buildDots(cur){ document.querySelectorAll('[id^="dots"]').forEach(d=>{ d.innerHTML=''; for(let i=0;i<TOTAL_SLIDES;i++){ const dot=document.createElement('span'); dot.className='dot'+(i===cur?' on':(i<cur?' done':'')); d.appendChild(dot); } }); }
+
+document.querySelectorAll('[data-go]').forEach(btn=>btn.addEventListener('click', ()=>{
+  const n = +btn.dataset.go;
+  if (n === FINAL_INDEX){ showFinal(); } else { go(n); }
+}));
+
+let audioCtx;
+function beep(freq, dur, type){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    o.type = type||'sine'; o.frequency.value = freq; o.connect(g); g.connect(audioCtx.destination);
+    g.gain.setValueAtTime(.12, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime+dur);
+    o.start(); o.stop(audioCtx.currentTime+dur);
+  }catch(e){}
+}
+function playRight(){ beep(880,.12); setTimeout(()=>beep(1180,.14),90); }
+function playWrong(){ beep(180,.22,'sawtooth'); }
+function playFanfare(){ [660,880,1100,1320].forEach((f,i)=>setTimeout(()=>beep(f,.18),i*130)); }
+
+function confetti(){
+  const colors = ['#E0AC3C','#7CC6FF','#86D464','#E07B3C','#1B2C5C'];
+  for(let i=0;i<24;i++){
+    const bit = document.createElement('div'); bit.className='confetti-bit';
+    bit.style.left = Math.random()*100+'vw'; bit.style.width = bit.style.height = (6+Math.random()*6)+'px';
+    bit.style.background = colors[Math.floor(Math.random()*colors.length)];
+    document.body.appendChild(bit);
+    const dur = 900+Math.random()*700;
+    bit.animate([{transform:'translateY(0) rotate(0deg)',opacity:1},{transform:'translateY(100vh) rotate('+(360+Math.random()*360)+'deg)',opacity:0}],{duration:dur,easing:'ease-in'});
+    setTimeout(()=>bit.remove(), dur+50);
+  }
+}
+
+document.querySelectorAll('.speak-btn').forEach(btn=>{
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const text = btn.dataset.speak; if (!text || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text); u.rate = 0.9;
+    btn.classList.add('speaking'); u.onend = ()=>btn.classList.remove('speaking');
+    window.speechSynthesis.speak(u);
+  });
+});
+
+document.querySelectorAll('[data-flip]').forEach(card=>{
+  card.addEventListener('click', ()=>card.classList.toggle('flipped'));
+});
+
+document.addEventListener('click', (e)=>{
+  const opt = e.target.closest('.opt'); if (!opt || opt.disabled) return;
+  const box = opt.closest('.qbox'); const qid = box.dataset.q; if (!qid || state.answered[qid]) return;
+  const bonus = box.dataset.bonus === '1';
+  const pts = bonus ? 0 : (+box.dataset.pts || 5);
+  const firstTry = !state.attempted[qid]; state.attempted[qid] = true;
+  const fb = box.querySelector('.feedback'); const correct = opt.dataset.c === '1';
+  if (correct){
+    state.answered[qid] = true; opt.classList.add('right'); box.classList.add('ok');
+    box.querySelectorAll('.opt').forEach(b=>b.disabled = true);
+    if (bonus){ fb.textContent = '🌟 Great practice! +5 XP'; }
+    else if (firstTry){ addScore(pts); fb.textContent = '🎉 Correct on the first try! +' + pts + ' points!'; }
+    else { fb.textContent = '✅ You found it! No points this time, but great persistence!'; }
+    fb.className = 'feedback show ok'; addXP(bonus?5:10); addCoins(2); playRight(); confetti();
+  } else {
+    state.wrongCount[qid] = (state.wrongCount[qid] || 0) + 1;
+    opt.classList.add('shake'); setTimeout(()=>opt.classList.remove('shake'), 450);
+    if (!bonus && state.wrongCount[qid] >= MAX_ATTEMPTS){
+      state.answered[qid] = true;
+      box.querySelectorAll('.opt').forEach(b=>{ b.disabled = true; if (b.dataset.c === '1') b.classList.add('right'); });
+      box.classList.add('locked');
+      fb.innerHTML = '📚 That was try #' + state.wrongCount[qid] + '. The correct answer is highlighted above.' + (box.dataset.logic ? ' <br><b>Why:</b> ' + box.dataset.logic : '') + ' No points this time, but you have got this next time!';
+      fb.className = 'feedback show bad';
+    } else {
+      const triesLeft = bonus ? '' : ' (' + (MAX_ATTEMPTS - state.wrongCount[qid]) + ' try left)';
+      fb.textContent = '❌ Not yet — think it through and try again.' + triesLeft;
+      fb.className = 'feedback show bad';
+    }
+    playWrong(); flashX();
+  }
+});
+
+function checkFill(fid){
+  const box = document.querySelector('[data-fq="' + fid + '"]'); if (!box || state.answered['fill-' + fid]) return;
+  const inp = box.querySelector('.fillin'); const fb = box.querySelector('.feedback');
+  const bonus = box.dataset.bonus === '1'; const pts = bonus ? 0 : (+box.dataset.pts || 5);
+  const val = inp.value.trim();
+  if (val === '') { fb.textContent = 'Type your answer first!'; fb.className = 'feedback show bad'; return; }
+  const firstTry = !state.attempted['fill-' + fid]; state.attempted['fill-' + fid] = true;
+  const accepted = String(box.dataset.ans).split('|').map(s=>s.trim().toLowerCase());
+  if (accepted.indexOf(val.toLowerCase()) !== -1){
+    state.answered['fill-' + fid] = true; inp.classList.remove('bad'); inp.classList.add('ok'); inp.disabled = true; box.classList.add('ok');
+    if (bonus){ fb.textContent = '🌟 Nice practice! +5 XP'; }
+    else if (firstTry){ addScore(pts); fb.textContent = '🎉 Right on the first try! +' + pts + ' points!'; }
+    else { fb.textContent = '✅ You got it! Keep that brain working!'; }
+    fb.className = 'feedback show ok'; addXP(bonus?5:8); addCoins(2); playRight(); confetti();
+  } else {
+    state.wrongCount['fill-' + fid] = (state.wrongCount['fill-' + fid] || 0) + 1;
+    inp.classList.add('bad');
+    if (!bonus && state.wrongCount['fill-' + fid] >= MAX_ATTEMPTS){
+      state.answered['fill-' + fid] = true; inp.disabled = true; box.classList.add('locked');
+      const correctAnswer = String(box.dataset.ans).split('|')[0];
+      fb.innerHTML = '📚 That was try #' + state.wrongCount['fill-' + fid] + '. The correct answer is: ' + correctAnswer + '.' + (box.dataset.logic ? ' <br><b>Why:</b> ' + box.dataset.logic : '') + ' No points this time, but you have got this next time!';
+      fb.className = 'feedback show bad';
+    } else {
+      const triesLeft = bonus ? '' : ' (' + (MAX_ATTEMPTS - state.wrongCount['fill-' + fid]) + ' try left)';
+      fb.textContent = '❌ Not yet — check your work and try again.' + triesLeft;
+      fb.className = 'feedback show bad';
+      setTimeout(()=>{ inp.classList.remove('bad'); }, 1200);
+    }
+    playWrong(); flashX();
+  }
+}
+document.querySelectorAll('[data-check]').forEach(btn=>btn.addEventListener('click', ()=>checkFill(btn.dataset.check)));
+
+const MATCH_PAIRS = [
+  ['4 rows of 22 chairs', '88'],
+  ['12 boxes of 5 pencils', '60'],
+  ['9 tables of 14 guests', '126'],
+  ['7 shelves of 8 books', '56'],
+  ['6 vans of 15 kids', '90']
+];
+let mSel = null;
+function buildMatch(){
+  const left = document.getElementById('mLeft'), right = document.getElementById('mRight'); if(!left||!right) return;
+  left.innerHTML=''; right.innerHTML='';
+  const facts = MATCH_PAIRS.map((p,i)=>({t:p[0],k:i})); const prods = MATCH_PAIRS.map((p,i)=>({t:p[1],k:i}));
+  shuffle(facts); const order = shuffle([0,1,2,3,4]);
+  facts.forEach(f=>{ const b=document.createElement('button'); b.className='mitem'; b.dataset.mk=f.k; b.dataset.side='L'; b.textContent=f.t; left.appendChild(b); });
+  order.forEach(idx=>{ const p=prods[idx]; const b=document.createElement('button'); b.className='mitem'; b.dataset.mk=p.k; b.dataset.side='R'; b.textContent=p.t; right.appendChild(b); });
+}
+document.addEventListener('click', (e)=>{
+  const item = e.target.closest('.mitem'); if (!item || item.classList.contains('done')) return;
+  if (!mSel){ mSel = item; item.classList.add('sel'); return; }
+  if (mSel === item){ mSel.classList.remove('sel'); mSel = null; return; }
+  if (mSel.dataset.side === item.dataset.side){ mSel.classList.remove('sel'); mSel = item; item.classList.add('sel'); return; }
+  if (mSel.dataset.mk === item.dataset.mk){
+    mSel.classList.remove('sel'); mSel.classList.add('done'); item.classList.add('done');
+    mSel.disabled = true; item.disabled = true; mSel = null;
+    state.matchDone++; document.getElementById('matchScoreline').textContent = 'Matched: ' + state.matchDone + ' / 5';
+    addScore(2); addXP(6); addCoins(2); playRight(); confetti();
+  } else {
+    item.classList.add('shake'); mSel.classList.add('shake');
+    setTimeout(()=>{ item.classList.remove('shake','sel'); mSel.classList.remove('shake','sel'); mSel=null; }, 450);
+    playWrong(); flashX();
+  }
+});
+
+function showFinal(){
+  go(FINAL_INDEX);
+  document.getElementById('finalScore').textContent = state.score;
+  const rec = saveModuleResult(state.score);
+  reportProgress(state.score, rec);
+  const passed = state.score >= MASTERY_THRESHOLD;
+  let tierTitle = 'Rising Climber! ⭐';
+  if (state.score >= 90) tierTitle = 'Mountain Champion! 👑';
+  else if (state.score >= 75) tierTitle = 'Area Model Pro! 🌟';
+  else if (state.score >= 50) tierTitle = 'Trail Blazer! 🥾';
+  document.getElementById('finalTitle').textContent = tierTitle;
+
+  const headline = document.getElementById('finalHeadline');
+  const badge = document.getElementById('finalBadge');
+  const msgHeading = document.getElementById('finalMessageHeading');
+  const msgBody = document.getElementById('finalMessageBody');
+  const continueLink = document.getElementById('continueLink');
+
+  if (passed){
+    badge.textContent = 'Lesson Mastered';
+    headline.textContent = '🎉 Outstanding Work!';
+    msgHeading.innerHTML = '🏆 You mastered the area model!';
+    msgBody.innerHTML = 'You scored ' + state.score + '/100 — that clears the ' + MASTERY_THRESHOLD + '+ mastery mark. Multiplication Mountain Lesson 2 unlocks next!';
+    if (NEXT_LESSON_URL){ continueLink.href = NEXT_LESSON_URL; continueLink.style.display='inline-block'; } else { continueLink.style.display='none'; }
+  } else if (rec && rec.locked){
+    badge.textContent = 'Locked';
+    headline.textContent = '🔒 Out of Attempts';
+    msgHeading.innerHTML = '🏕️ Practice makes progress.';
+    msgBody.innerHTML = 'You scored ' + state.score + '/100 on your ' + MAX_FAILED_ATTEMPTS + 'rd attempt without reaching ' + MASTERY_THRESHOLD + '/100. This lesson is now locked — ask your teacher for the unlock code to try again.';
+    continueLink.style.display = 'none';
+    const replayBtn = document.querySelector('[data-replay]'); if (replayBtn) replayBtn.style.display = 'none';
+  } else {
+    badge.textContent = 'Keep Practicing';
+    headline.textContent = '💪 Great Effort Today!';
+    msgHeading.innerHTML = '🏕️ Practice makes progress.';
+    const attemptsLeft = MAX_FAILED_ATTEMPTS - (rec ? rec.failedAttempts : 1);
+    msgBody.innerHTML = 'You scored ' + state.score + '/100. Mastering this lesson means reaching ' + MASTERY_THRESHOLD + '/100. You are not there yet, and that is okay! You have ' + attemptsLeft + ' attempt' + (attemptsLeft===1?'':'s') + ' left. Hit Try Again whenever you are ready for a fresh set of questions.';
+    continueLink.style.display = 'none';
+  }
+  if (rec && rec.attempts > 1){
+    const note = document.getElementById('priorAttemptNote');
+    note.style.display = 'block'; note.innerHTML = 'Best score so far: <b>' + rec.score + '/100</b> across ' + rec.attempts + ' tries.';
+  }
+  playFanfare(); setTimeout(confetti,250); setTimeout(confetti,1100); setTimeout(confetti,1900);
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{ shuffleAllOptions(); buildMatch(); updateHud(); buildDots(0); showPriorCompletionBanner(); checkLockedOnLoad(); });
+</script>
+</body>
+</html>
