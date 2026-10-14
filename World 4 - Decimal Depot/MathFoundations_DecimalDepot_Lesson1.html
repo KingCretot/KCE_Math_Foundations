@@ -334,7 +334,7 @@ ul.tips li{margin:5px 0}
       </div>
       <p class="feedback"></p>
     </div>
-    <div class="qbox" data-fq="t1b_s0" data-pts="5" data-ans="8/10" data-logic="0.8 = 8/10.">
+    <div class="qbox" data-fq="t1b_s0" data-pts="5" data-ans="8/10|4/5" data-logic="0.8 = 8/10.">
       <span class="pts">+5</span>
       <div class="fillrow"><span class="eq">Write 0.8 as a fraction (use a slash, like 3/10)</span><input class="fillin" inputmode="numeric" aria-label="answer"><button class="btn btn-pri" data-check="t1b_s0">Check</button></div>
       <p class="feedback"></p>
@@ -370,7 +370,7 @@ ul.tips li{margin:5px 0}
       </div>
       <p class="feedback"></p>
     </div>
-    <div class="qbox" data-fq="t2b_s0" data-pts="5" data-ans="60/100" data-logic="0.60 = 60/100.">
+    <div class="qbox" data-fq="t2b_s0" data-pts="5" data-ans="60/100|6/10|3/5" data-logic="0.60 = 60/100.">
       <span class="pts">+5</span>
       <div class="fillrow"><span class="eq">Write 0.60 as a fraction (use a slash)</span><input class="fillin" inputmode="numeric" aria-label="answer"><button class="btn btn-pri" data-check="t2b_s0">Check</button></div>
       <p class="feedback"></p>
@@ -496,7 +496,7 @@ ul.tips li{margin:5px 0}
       <div class="fillrow"><span class="eq">Write 0.7 as a fraction (use a slash)</span><input class="fillin" inputmode="numeric" aria-label="answer"><button class="btn btn-pri" data-check="ty1_s0">Check</button></div>
       <p class="feedback"></p>
     </div>
-    <div class="qbox" data-fq="ty2_s0" data-pts="5" data-ans="40/100" data-logic="0.40 = 40/100.">
+    <div class="qbox" data-fq="ty2_s0" data-pts="5" data-ans="40/100|4/10|2/5" data-logic="0.40 = 40/100.">
       <span class="pts">+5</span>
       <div class="fillrow"><span class="eq">Write 0.40 as a fraction (use a slash)</span><input class="fillin" inputmode="numeric" aria-label="answer"><button class="btn btn-pri" data-check="ty2_s0">Check</button></div>
       <p class="feedback"></p>
@@ -828,7 +828,8 @@ function checkFill(fid){
   if (val === '') { fb.textContent = 'Type your answer first!'; fb.className = 'feedback show bad'; return; }
   const firstTry = !state.attempted['fill-' + fid]; state.attempted['fill-' + fid] = true;
   const accepted = String(box.dataset.ans).split('|').map(s=>s.trim().toLowerCase());
-  if (accepted.indexOf(val.toLowerCase()) !== -1){
+  const numVal = val.replace(/[\s,$]/g,''); const numOk = /^-?\d*\.?\d+$/.test(numVal) && accepted.some(a=>/^-?\d*\.?\d+$/.test(a) && parseFloat(a) === parseFloat(numVal));
+  if (accepted.indexOf(val.toLowerCase()) !== -1 || accepted.indexOf(val.toLowerCase().replace(/\s+/g,'')) !== -1 || numOk){
     state.answered['fill-' + fid] = true; inp.classList.remove('bad'); inp.classList.add('ok'); inp.disabled = true; box.classList.add('ok');
     if (bonus){ fb.textContent = '🌟 Nice practice! +5 XP'; }
     else if (firstTry){ addScore(pts); fb.textContent = '🎉 Right! +' + pts + ' points!'; }

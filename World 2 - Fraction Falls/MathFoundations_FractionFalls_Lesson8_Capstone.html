@@ -531,7 +531,7 @@ ul.tips li{margin:5px 0}
   <div class="qset" data-set="0">
     <div class="qbox" data-fq="ty1_s0" data-pts="5" data-ans="3/4" data-logic="9/12 divided by 3/3 = 3/4.">
       <span class="pts">+5</span>
-      <div class="fillrow"><span class="eq">9/12 simplifies to ?/4. Type the full fraction like 3/4.</span><input class="fillin" inputmode="numeric" aria-label="answer"><button class="btn btn-pri" data-check="ty1_s0">Check</button></div>
+      <div class="fillrow"><span class="eq">9/12 simplifies to ?/4. Type the full fraction, like 1/4.</span><input class="fillin" inputmode="numeric" aria-label="answer"><button class="btn btn-pri" data-check="ty1_s0">Check</button></div>
       <p class="feedback"></p>
     </div>
     <div class="qbox" data-fq="ty2_s0" data-pts="5" data-ans="4" data-logic="1+3=4.">
@@ -650,8 +650,8 @@ ul.tips li{margin:5px 0}
       </div>
       <p class="feedback"></p>
     </div>
-    <div class="qbox" data-q="boss6_s0" data-pts="5" data-logic="13 divided by 5 is 2 remainder 3.">
-      <span class="pts">+5</span>
+    <div class="qbox" data-q="boss6_s0" data-bonus="1" data-logic="13 divided by 5 is 2 remainder 3.">
+      <span class="pts">⭐ Bonus</span>
       <p class="qtext">13/5 as a mixed number is:</p>
       <div class="opts">
         <button class="opt" data-c="1">2 3/5</button>
@@ -876,7 +876,8 @@ function checkFill(fid){
   if (val === '') { fb.textContent = 'Type your answer first!'; fb.className = 'feedback show bad'; return; }
   const firstTry = !state.attempted['fill-' + fid]; state.attempted['fill-' + fid] = true;
   const accepted = String(box.dataset.ans).split('|').map(s=>s.trim().toLowerCase());
-  if (accepted.indexOf(val.toLowerCase()) !== -1){
+  const numVal = val.replace(/[\s,$]/g,''); const numOk = /^-?\d*\.?\d+$/.test(numVal) && accepted.some(a=>/^-?\d*\.?\d+$/.test(a) && parseFloat(a) === parseFloat(numVal));
+  if (accepted.indexOf(val.toLowerCase()) !== -1 || accepted.indexOf(val.toLowerCase().replace(/\s+/g,'')) !== -1 || numOk){
     state.answered['fill-' + fid] = true; inp.classList.remove('bad'); inp.classList.add('ok'); inp.disabled = true; box.classList.add('ok');
     if (bonus){ fb.textContent = '🌟 Nice practice! +5 XP'; }
     else if (firstTry){ addScore(pts); fb.textContent = '🎉 Right on the first try! +' + pts + ' points!'; }

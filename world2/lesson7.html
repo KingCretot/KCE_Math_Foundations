@@ -765,7 +765,8 @@ function checkFill(fid){
   if (val === '') { fb.textContent = 'Type your answer first!'; fb.className = 'feedback show bad'; return; }
   const firstTry = !state.attempted['fill-' + fid]; state.attempted['fill-' + fid] = true;
   const accepted = String(box.dataset.ans).split('|').map(s=>s.trim().toLowerCase());
-  if (accepted.indexOf(val.toLowerCase()) !== -1){
+  const numVal = val.replace(/[\s,$]/g,''); const numOk = /^-?\d*\.?\d+$/.test(numVal) && accepted.some(a=>/^-?\d*\.?\d+$/.test(a) && parseFloat(a) === parseFloat(numVal));
+  if (accepted.indexOf(val.toLowerCase()) !== -1 || accepted.indexOf(val.toLowerCase().replace(/\s+/g,'')) !== -1 || numOk){
     state.answered['fill-' + fid] = true; inp.classList.remove('bad'); inp.classList.add('ok'); inp.disabled = true; box.classList.add('ok');
     if (bonus){ fb.textContent = '🌟 Nice practice! +5 XP'; }
     else if (firstTry){ addScore(pts); fb.textContent = '🎉 Right! +' + pts + ' points!'; }

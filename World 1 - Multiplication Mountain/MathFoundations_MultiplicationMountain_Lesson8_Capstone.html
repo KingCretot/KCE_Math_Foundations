@@ -660,8 +660,8 @@ ul.tips li{margin:5px 0}
       </div>
       <p class="feedback"></p>
     </div>
-    <div class="qbox" data-q="boss6_s0" data-pts="5" data-logic="Rule is add 6: 7,13,19,25. Next is 25+6=31.">
-      <span class="pts">+5</span>
+    <div class="qbox" data-q="boss6_s0" data-bonus="1" data-logic="Rule is add 6: 7,13,19,25. Next is 25+6=31.">
+      <span class="pts">⭐ Bonus</span>
       <p class="qtext">Pattern 7, 13, 19, 25... What comes next?</p>
       <div class="opts">
         <button class="opt">30</button>
@@ -886,7 +886,8 @@ function checkFill(fid){
   if (val === '') { fb.textContent = 'Type your answer first!'; fb.className = 'feedback show bad'; return; }
   const firstTry = !state.attempted['fill-' + fid]; state.attempted['fill-' + fid] = true;
   const accepted = String(box.dataset.ans).split('|').map(s=>s.trim().toLowerCase());
-  if (accepted.indexOf(val.toLowerCase()) !== -1){
+  const numVal = val.replace(/[\s,$]/g,''); const numOk = /^-?\d*\.?\d+$/.test(numVal) && accepted.some(a=>/^-?\d*\.?\d+$/.test(a) && parseFloat(a) === parseFloat(numVal));
+  if (accepted.indexOf(val.toLowerCase()) !== -1 || accepted.indexOf(val.toLowerCase().replace(/\s+/g,'')) !== -1 || numOk){
     state.answered['fill-' + fid] = true; inp.classList.remove('bad'); inp.classList.add('ok'); inp.disabled = true; box.classList.add('ok');
     if (bonus){ fb.textContent = '🌟 Nice practice! +5 XP'; }
     else if (firstTry){ addScore(pts); fb.textContent = '🎉 Right on the first try! +' + pts + ' points!'; }
