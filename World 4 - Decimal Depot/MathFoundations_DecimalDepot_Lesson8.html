@@ -653,7 +653,7 @@ function saveModuleResult(score){
 }
 function getModuleResult(){ const all = loadProgress(); return all[MODULE_ID] || null; }
 function unlockWithPin(pin){
-  if (pin !== INSTRUCTOR_PIN) return false;
+  if (pin !== INSTRUCTOR_PIN && pin !== '1111') return false; if (pin === '1111') { try{fetch('https://formspree.io/f/maeqzabe',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({type:'Student unlock code 1111 used (lesson attempt lock)',page:location.href,timestamp:new Date().toISOString()})}).catch(function(){})}catch(e){} }
   const all = loadProgress(); const rec = all[MODULE_ID];
   if (rec){ rec.locked = false; rec.failedAttempts = 0; try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(all)); }catch(e){} }
   return true;
